@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: atsea-service
+  namespace: atsea
+  labels:
+    app: atsea-service
+spec:
+  selector:
+    app: atsea-deploy-app
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+---

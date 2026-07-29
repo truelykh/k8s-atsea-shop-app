@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-gateway-deploy
+  namespace: atsea
+  labels:
+    app: atsea-payment-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-gateway-app
+  template:
+    metadata:
+      labels:
+        app: payment-gateway-app
+    spec:
+      containers:
+        - name: payment-gateway
+          image: dockersamples/atseasampleshopapp_payment_gateway
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          volumeMounts:
+            - name: payment-token
+              mountPath: /run/secrets
+              readOnly: true
+      volumes:
+        - name: payment-token
+          secret:
+            secretName: payment-gateway-secret
+            items:
+              - key: payment_token
+                path: payment_token
+---

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atsea-deploy
+  namespace: atsea
+  labels:
+    app: atsea-app
+spec:
+  selector:
+    matchLabels:
+      app: atsea-deploy-app
+  template:
+    metadata:
+      labels:
+        app: atsea-deploy-app
+    spec:
+      containers:
+        - name: atsea-app
+          image: dockersamples/atsea_app
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: postgres-password
+              mountPath: /run/secrets
+              readOnly: true
+      volumes:
+        - name: postgres-password
+          secret:
+            secretName: db-secret
+            items:
+              - key: POSTGRES_PASSWORD
+                path: postgres_password
+---

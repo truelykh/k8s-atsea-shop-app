@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-app
+  namespace: atsea
+  labels:
+    app: atsea-db-sfs-app
+spec:
+  serviceName: database
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-sfs-app
+  template:
+    metadata:
+      labels:
+        app: db-sfs-app
+    spec:
+      containers:
+        - name: db
+          image: postgres:10.0-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          envFrom:
+            - secretRef:
+                name: db-secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: db-init-volume
+              mountPath: /docker-entrypoint-initdb.d
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: db-init-volume
+          configMap:
+            name: db-init-configmap
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+---

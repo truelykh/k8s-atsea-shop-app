@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-network-policy
+  namespace: atsea
+spec:
+  podSelector:
+    matchLabels:
+      app: db-sfs-app
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            # Only allow traffic from the App Server
+            matchLabels:
+              app: atsea-deploy-app
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-gateway-network-policy
+  namespace: atsea
+spec:
+  podSelector:
+    matchLabels:
+      app: payment-gateway-app
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            # Only allow traffic from the App Server
+            matchLabels:
+              app: atsea-deploy-app
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: appserver-network-policy
+  namespace: atsea
+spec:
+  podSelector:
+    matchLabels:
+      app: atsea-deploy-app
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            # Only allow traffic from the Reverse Proxy
+            matchLabels:
+              app: reverseproxy-app
+      ports:
+        - protocol: TCP
+          port: 8080
+---
