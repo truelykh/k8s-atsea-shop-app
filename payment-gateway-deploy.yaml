@@ -27,7 +27,8 @@ spec:
               cpu: "100m"
           volumeMounts:
             - name: payment-token
-              mountPath: /run/secrets
+              mountPath: /run/secrets/payment_token
+              subPath: payment_token
               readOnly: true
       volumes:
         - name: payment-token
