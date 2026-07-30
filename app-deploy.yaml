@@ -21,11 +21,11 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "100m"
+              cpu: 100m
+              memory: 256Mi
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: postgres-password
               mountPath: /run/secrets/postgres_password
