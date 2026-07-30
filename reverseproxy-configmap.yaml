@@ -34,19 +34,17 @@ data:
 
         gzip  on;
 
-        include /etc/nginx/conf.d/*.conf;
-
         server {
-            listen 80;
-            server_name atseashop.com;
-            return 301 https://$host$request_uri;
+            listen 80 default_server;
+            server_name _;
+            return 301 https://$host:31909$request_uri;
         }
 
         server {
-            listen 443 ssl;
+            listen 443 ssl default_server;
             ssl_certificate /etc/nginx/ssl/tls.crt;
             ssl_certificate_key /etc/nginx/ssl/tls.key;
-            server_name atseashop.com;
+            server_name _;
             access_log /dev/stdout;
             error_log /dev/stderr;
 
